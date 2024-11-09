@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Code Smell Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Code Smell Detector</h1>
+        
+        <input type="file" id="projectFolder" webkitdirectory mozdirectory directory>
+        <button id="scanButton">Scan Project</button>
+        <button id="downloadPDFButton">Download PDF Report</button>
+        
+        <!-- Loader -->
+        <div id="loader" class="loader"></div>
+        
+        <canvas id="chart" width="400" height="200"></canvas>
+        <div id="reportOutput"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
