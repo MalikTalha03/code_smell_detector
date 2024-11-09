@@ -101,6 +101,10 @@ def download_pdf():
 
     return send_file(pdf_path, as_attachment=True)
 
+# if __name__ == '__main__':
+#     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+#     app.run(debug=True, port=5002)
 if __name__ == '__main__':
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True, port=5002)
+    # Heroku assigns the PORT through the environment variable
+    port = int(os.environ.get('PORT', 5000))  # Default to 5000 if PORT is not set
+    app.run(host='0.0.0.0', port=port, debug=True) 
