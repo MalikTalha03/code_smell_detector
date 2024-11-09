@@ -5,3 +5,5 @@ keras
 myenv
 nltk
 scipy
+uploaded_projects
+__pycache__
