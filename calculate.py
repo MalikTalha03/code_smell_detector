@@ -1,9 +1,9 @@
 import ast
-# Metric calculation functions
+from op_counter import Counter
+
 def calculate_par(node):
     """Calculate Number of Parameters (PAR)."""
     return len(node.args.args)
-
 
 def calculate_doc(node):
     """Calculate Depth of Closure (DOC)."""
@@ -29,17 +29,14 @@ def calculate_mloc(node, source_code):
         mloc = len(node.body)
     return mloc
 
-
 def calculate_cloc(node, source_code):
     """Calculate Class Lines of Code (CLOC), ignoring empty lines."""
     if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
         source_code = source_code.split("\n")
         class_lines = source_code[node.lineno - 1:node.end_lineno] 
         class_lines = [line for line in class_lines if not line.strip().startswith("#") and not line.strip().startswith("'''") and not line.strip().startswith('"""')]
-        # Count non-empty lines (ignoring lines with only whitespace)
         cloc = sum(1 for line in class_lines if line.strip())  # Count only non-empty lines
     else:
-        # Fallback for older Python versions without `end_lineno`
         cloc = len(node.body)
     return cloc
 
@@ -62,46 +59,6 @@ def calculate_noo(node):
     return count_operators_and_operands(node)
 
 def count_operators_and_operands(node):
-    class Counter(ast.NodeVisitor):
-        def __init__(self):
-            self.operators = 0
-            self.operands = 0
-
-        # Arithmetic Operators (+, -, *, /, //, %, **)
-        def visit_BinOp(self, node):
-            self.operators += 1  # Count the operator
-            self.operands += 2  # Left and right are operands
-            self.generic_visit(node)
-
-        # Unary Operators (-x, ~x)
-        def visit_UnaryOp(self, node):
-            self.operators += 1  # Unary operator
-            self.operands += 1  # Operand (e.g., `-x`)
-            self.generic_visit(node)
-
-        # Assignment Operators (=, +=, -=, etc.)
-        def visit_AugAssign(self, node):
-            self.operators += 1  # Assignment operator
-            self.operands += 1  # Target variable
-            self.generic_visit(node)
-
-        def visit_Assign(self, node):
-            self.operators += 1  # Simple assignment `=`
-            self.operands += len(node.targets) + 1  # All targets + value
-            self.generic_visit(node)
-
-        # Comparison Operators (==, !=, <, >, <=, >=)
-        def visit_Compare(self, node):
-            self.operators += len(node.ops)  # Count comparison operators
-            self.operands += len(node.comparators) + 1  # Comparators + left operand
-            self.generic_visit(node)
-
-        # Logical Operators (and, or, not)
-        def visit_BoolOp(self, node):
-            self.operators += len(node.values) - 1  # Logical operator count
-            self.operands += len(node.values)  # Each value is an operand
-            self.generic_visit(node)
-        
     counter = Counter()
     counter.visit(node)
     return counter.operators + counter.operands
@@ -115,7 +72,7 @@ def calculate_noff(node):
     """Calculate Number of For Clauses and Filters (NOFF)."""
     noff = 0
     if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
-        for generator in node.generators:  # `generators` contains `ast.comprehension` nodes
-            noff += 1  # Count the `for` clause
-            noff += len(generator.ifs)  # Add the number of filters for this clause
+        for generator in node.generators:  
+            noff += 1 
+            noff += len(generator.ifs) 
     return noff
