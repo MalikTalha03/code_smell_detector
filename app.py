@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, session
 import os
 import json
-from detector import detect_code_smells_in_directory
+from main import detect_code_smells_in_directory
 from fpdf import FPDF
 
 app = Flask(__name__)
@@ -103,4 +103,4 @@ def download_pdf():
 
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True, port=5002)
+    app.run(debug=True, port=5007)
