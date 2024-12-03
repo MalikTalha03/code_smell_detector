@@ -1,31 +1,105 @@
+/* General Styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f4f4f9;
+    min-height: 100vh;
 }
 
 .container {
-    text-align: center;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #fff;
+    width: 90%;
+    max-width: 1000px;
+    background: #fff;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
 }
 
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
+/* Layout Styling */
+.layout {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* Code Section */
+.code-section {
+    flex: 1;
+    padding: 15px;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.code-section h2 {
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 90%;
+    height: 250px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: vertical;
+    background: #f7f7f7;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Upload Section */
+.upload-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.section {
+    padding: 15px;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+input[type="file"] {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
     cursor: pointer;
 }
 
-canvas {
-    margin-top: 20px;
+/* Buttons */
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(1px);
 }
 
 /* Loader */
@@ -36,14 +110,67 @@ canvas {
     left: 50%;
     transform: translate(-50%, -50%);
     border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid #3498db;
+    border-top: 4px solid #007bff;
     border-radius: 50%;
     width: 50px;
     height: 50px;
-    animation: spin 2s linear infinite;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    textarea {
+        height: 200px;
+    }
+}
+
+
+/* Container for the total smells */
+.total-smells-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Individual smell cards */
+.smell-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.smell-card:hover {
+    transform: translateY(-5px);
+}
+
+.smell-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.smell-card p {
+    font-size: 16px;
+    color: #555;
+}
+
+.smell-card strong {
+    font-size: 18px;
+    color: #3498db;
 }
