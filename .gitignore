@@ -6,3 +6,7 @@ myenv
 nltk
 scipy
 __pycache__
+uploaded_projects
+/*.json
+d.py
+test.py
