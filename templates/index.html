@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Smell Detector</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -10,16 +11,43 @@
     <div class="container">
         <h1>Code Smell Detector</h1>
         
-        <input type="file" id="projectFolder" webkitdirectory mozdirectory directory>
-        <button id="scanButton">Scan Project</button>
-        <button id="downloadPDFButton">Download PDF Report</button>
-        
+        <div class="layout">
+            <!-- Code Input Section -->
+            <div class="code-section">
+                <h2>Analyze Code Snippet</h2>
+                <textarea id="codeInput" placeholder="Paste your code here..." rows="15"></textarea>
+                <button id="analyzeCodeButton">Analyze Code</button>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <div class="section">
+                    <h2>Upload a Python File</h2>
+                    <input type="file" id="singleFileInput" accept=".py">
+                    <button id="analyzeFileButton">Analyze File</button>
+                </div>
+                <div class="section">
+                    <h2>Upload a Project Folder</h2>
+                    <input type="file" id="projectFolder" webkitdirectory mozdirectory directory>
+                    <button id="scanButton">Analyze Folder</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Loader -->
-        <div id="loader" class="loader"></div>
-        
+        <div id="loader" class="loader" style="display: none;"></div>
+
+        <!-- Chart and Results -->
+        <h2>Analysis Results</h2>
+        <button id="downloadPDFButton">Download PDF Report</button>
         <canvas id="chart" width="400" height="200"></canvas>
         <div id="reportOutput"></div>
+        <!-- Total Smell Counts Section -->
+        <div id="totalSmells" class="total-smells-container">
+            <!-- Total smells will be dynamically inserted here -->
+        </div>
     </div>
+
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
