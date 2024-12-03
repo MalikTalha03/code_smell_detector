@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, session
 import os
 import json
-from main import detect_code_smells_in_directory
+from main import detect_code_smells_in_directory, analyze_code_snippet
 from fpdf import FPDF
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 50 MB
 
 # Set the secret key to sign session data
 app.secret_key = 'smell_detector'
@@ -35,13 +36,62 @@ def scan_project():
 
     return jsonify(report_data)
 
+from flask import Flask, request, jsonify
+
+@app.route('/analyze_snippet', methods=['POST'])
+def analyze_snippet():
+    # Get the code snippet from the request
+    code_snippet = request.form.get('codeSnippet', '')
+
+    if not code_snippet:
+        return jsonify({'error': 'No code snippet provided'}), 400
+
+    try:
+        # Placeholder: Analyze the code snippet
+        results = analyze_code_snippet(code_snippet)  # Implement this function to detect code smells
+        
+        return jsonify(results)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/analyze_file', methods=['POST'])
+def analyze_file():
+    # Check if a file is included in the request
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+
+    file = request.files['file']
+
+    # Ensure the uploaded file is a Python file
+    if not file.filename.endswith('.py'):
+        return jsonify({'error': 'Only Python (.py) files are allowed'}), 400
+
+    try:
+        # Read the file contents
+        file_content = file.read().decode('utf-8')
+
+        # Placeholder: Analyze the file contents
+        results = analyze_code_snippet(file_content)  # Reuse the same analysis function
+        
+        return jsonify(results), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
 # Abbreviations for code smells
 ABBREVIATIONS = {
     "Long Parameter List": "LPL",
-    "Long Scope Chaining": "LSC",
-    "Long Message Chain": "LMC",
-    "Long Lambda Function ": "LLF",
+    "Long Base Class List": "LBCL",
+    "Long Class": "LC",
+    "Long Method": "LM",
+    "Complex Container Comprehension": "CCC",
+    "Long Lambda Function": "LLF",
+    "Long Ternary Conditional Expression": "LTCE",
+    "Long Scope Chaining": "LSC"
 }
+
+
 
 @app.route('/download_pdf', methods=['GET'])
 def download_pdf():
