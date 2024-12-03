@@ -1,3 +1,72 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Clear file inputs
+    document.getElementById('singleFileInput').value = '';
+    document.getElementById('projectFolder').value = '';
+
+    // Clear text input
+    document.getElementById('codeInput').value = '';
+});
+
+document.getElementById('analyzeCodeButton').addEventListener('click', async function () {
+    const codeSnippet = document.getElementById('codeInput').value.trim();
+
+    if (!codeSnippet) {
+        alert("Please enter code to analyze.");
+        return;
+    }
+
+    // Show the loader
+    document.getElementById('loader').style.display = 'block';
+
+    const formData = new FormData();
+    formData.append('codeSnippet', codeSnippet);
+
+    try {
+        const response = await fetch('/analyze_snippet', {
+            method: 'POST',
+            body: formData
+        });
+
+        const reportData = await response.json();
+        displayResults(reportData);
+    } catch (error) {
+        console.error("Error analyzing code snippet:", error);
+    } finally {
+        document.getElementById('loader').style.display = 'none';
+    }
+});
+
+// Analyze Single Python File
+document.getElementById('analyzeFileButton').addEventListener('click', async function () {
+    const singleFileInput = document.getElementById('singleFileInput').files[0];
+
+    if (!singleFileInput) {
+        alert("Please select a Python file to analyze.");
+        return;
+    }
+
+    // Show the loader
+    document.getElementById('loader').style.display = 'block';
+
+    const formData = new FormData();
+    formData.append('file', singleFileInput);
+
+    try {
+        const response = await fetch('/analyze_file', {
+            method: 'POST',
+            body: formData
+        });
+
+        const reportData = await response.json();
+        displayResults(reportData);
+    } catch (error) {
+        console.error("Error analyzing file:", error);
+    } finally {
+        document.getElementById('loader').style.display = 'none';
+    }
+});
+
+// Analyze Project Folder
 document.getElementById('scanButton').addEventListener('click', async function() {
     const projectFolder = document.getElementById('projectFolder').files;
     
@@ -28,10 +97,12 @@ document.getElementById('scanButton').addEventListener('click', async function()
     }
 });
 
-document.getElementById('downloadPDFButton').addEventListener('click', function() {
+// Download PDF Report
+document.getElementById('downloadPDFButton').addEventListener('click', function () {
     window.location.href = '/download_pdf';
 });
 
+// Display Results in Chart
 function displayResults(data) {
     // Summarize code smells by type
     const smellCounts = data.reduce((acc, item) => {
@@ -93,5 +164,24 @@ function displayResults(data) {
                 }
             }
         }
+    });
+
+    // Display total number of code smells in a beautiful way
+    const totalSmellsContainer = document.getElementById('totalSmells');
+    totalSmellsContainer.innerHTML = '';  // Clear existing content
+
+    // Create and append a total count display for each code smell
+    Object.keys(smellCounts).forEach(smell => {
+        const count = smellCounts[smell];
+
+        // Create a card or badge for each code smell
+        const smellCard = document.createElement('div');
+        smellCard.classList.add('smell-card');
+        smellCard.innerHTML = `
+            <h3>${smell}</h3>
+            <p>Total: <strong>${count}</strong></p>
+        `;
+
+        totalSmellsContainer.appendChild(smellCard);
     });
 }
