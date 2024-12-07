@@ -50,11 +50,11 @@ def detect_code_smells_in_directory(directory_path, report_path):
     with open(report_path, 'w') as report_file:
         json.dump(smells, report_file, indent=4)
     print(f"Code smells detected and saved to {report_path}")
-def analyze_code_snippet(code_snippet):
+    
+def analyze_code_snippet(code_snippet, file_path="code_snippet.py"):
     """Analyze a code snippet for code smells."""
     try:
         smells = []
-        file_path = "code_snippet.py"
         source_code = code_snippet
         tree = ast.parse(source_code)
         for node in ast.walk(tree):
