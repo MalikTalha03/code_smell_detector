@@ -10,3 +10,4 @@ uploaded_projects
 /*.json
 d.py
 test.py
+electron_app/node_modules
