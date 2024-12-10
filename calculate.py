@@ -11,20 +11,25 @@ def calculate_doc(node):
 
 def count_nested_levels(node):
     """Count nested levels for Long Scope Chaining (LSC)."""
-    max_depth = 1
+    max_depth = 0
     for child in ast.iter_child_nodes(node):
         if isinstance(child, (ast.If, ast.While, ast.For, ast.With)):
             max_depth = max(max_depth, 1 + count_nested_levels(child))
     return max_depth
 
 def calculate_mloc(node, source_code):
-    """Calculate Method/Function Lines of Code (MLOC), ignoring empty lines."""
+    """Calculate Method Lines of Code (MLOC), ignoring decorators and empty lines."""
     if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
         source_code = source_code.split("\n")
-        function_lines = source_code[node.lineno - 1:node.end_lineno] 
-        function_lines = [line for line in function_lines if not line.strip().startswith("#") and not line.strip().startswith("'''") and not line.strip().startswith('"""')]
-        mloc = sum(1 for line in function_lines if line.strip()) 
-            
+        function_lines = source_code[node.lineno - 1:node.end_lineno]
+        function_lines = [
+            line for line in function_lines
+            if not line.strip().startswith("@")  # Exclude decorators
+            and not line.strip().startswith("#")
+            and not line.strip().startswith("'''")
+            and not line.strip().startswith('"""')
+        ]
+        mloc = sum(1 for line in function_lines if line.strip())
     else:
         mloc = len(node.body)
     return mloc
@@ -34,8 +39,14 @@ def calculate_cloc(node, source_code):
     if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
         source_code = source_code.split("\n")
         class_lines = source_code[node.lineno - 1:node.end_lineno] 
-        class_lines = [line for line in class_lines if not line.strip().startswith("#") and not line.strip().startswith("'''") and not line.strip().startswith('"""')]
-        cloc = sum(1 for line in class_lines if line.strip())  # Count only non-empty lines
+        class_lines = [
+            line for line in class_lines
+            if not line.strip().startswith("#")
+            and not line.strip().startswith("'''")
+            and not line.strip().startswith('"""')
+            and not line.strip().startswith("@") 
+        ]
+        cloc = sum(1 for line in class_lines if line.strip())  
     else:
         cloc = len(node.body)
     return cloc
@@ -49,10 +60,6 @@ def calculate_noc(node,s_code):
     node_source_code = s_code[node.lineno - 1:node.end_lineno]
     length = sum(len(line.strip()) for line in node_source_code)
     return length
-
-def calculate_noo(node):
-    """Calculate Number of Operators and Operands (NOO)."""
-    return count_operators_and_operands(node)
 
 def calculate_noo(node):
     """Calculate Number of Operators and Operands (NOO)."""
