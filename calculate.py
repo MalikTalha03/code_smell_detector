@@ -18,38 +18,60 @@ def count_nested_levels(node):
     return max_depth
 
 def calculate_mloc(node, source_code):
-    """Calculate Method Lines of Code (MLOC), ignoring decorators and empty lines."""
+    """Calculate Method Lines of Code (MLOC), ignoring decorators, comments, and docstrings."""
     if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
         source_code = source_code.split("\n")
         function_lines = source_code[node.lineno - 1:node.end_lineno]
-        function_lines = [
-            line for line in function_lines
-            if not line.strip().startswith("@")  # Exclude decorators
-            and not line.strip().startswith("#")
-            and not line.strip().startswith("'''")
-            and not line.strip().startswith('"""')
-        ]
-        mloc = sum(1 for line in function_lines if line.strip())
+        cleaned_lines = []
+        in_docstring = False
+
+        for line in function_lines:
+            stripped_line = line.strip()
+            # Handle multiline docstrings
+            if stripped_line.startswith(("'''", '"""')): 
+                if not in_docstring:
+                    in_docstring = True
+                elif in_docstring:  # End of docstring
+                    in_docstring = False
+                continue  # Skip this line
+            if not in_docstring and not stripped_line.startswith("@") and not stripped_line.startswith("#"):
+                cleaned_lines.append(line)
+
+        # Count non-empty lines
+        mloc = sum(1 for line in cleaned_lines if line.strip())
     else:
         mloc = len(node.body)
+    print('mloc', mloc)
     return mloc
 
+
 def calculate_cloc(node, source_code):
-    """Calculate Class Lines of Code (CLOC), ignoring empty lines."""
+    """Calculate Class Lines of Code (CLOC), ignoring comments, decorators, and docstrings."""
     if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
         source_code = source_code.split("\n")
-        class_lines = source_code[node.lineno - 1:node.end_lineno] 
-        class_lines = [
-            line for line in class_lines
-            if not line.strip().startswith("#")
-            and not line.strip().startswith("'''")
-            and not line.strip().startswith('"""')
-            and not line.strip().startswith("@") 
-        ]
-        cloc = sum(1 for line in class_lines if line.strip())  
+        class_lines = source_code[node.lineno - 1:node.end_lineno]
+        cleaned_lines = []
+        in_docstring = False
+
+        for line in class_lines:
+            stripped_line = line.strip()
+            # Handle multiline docstrings
+            if stripped_line.startswith(("'''", '"""')): 
+                if not in_docstring:
+                    in_docstring = True
+                elif in_docstring:  # End of docstring
+                    in_docstring = False
+                continue  # Skip this line
+            if not in_docstring and not stripped_line.startswith("@") and not stripped_line.startswith("#"):
+                cleaned_lines.append(line)
+
+        # Count non-empty lines
+        cloc = sum(1 for line in cleaned_lines if line.strip())
     else:
         cloc = len(node.body)
+    print('cloc', cloc)
     return cloc
+
 
 def calculate_nbc(node):
     """Calculate Number of Base Classes (NBC)."""
