@@ -6,19 +6,15 @@ THRESHOLDS = {
     "MLOC_LM": 38,  # Method/Function Lines of Code (LM)
     "DOC_LSC": 3,    # Depth of Closure (LSC)
     "CLOC_LC": 29,  # Class Lines of Code (LC)
-    "LMC": 5,    # Length of Message Chain (LMC)
-    "NBC_LBCL": 3,    # Number of Base Classes (LBCL)
-    "NOC_LLF": 48,   # Number of Characters (LLF, LTCE)
+    "NBC_LBCL": 3,    # Number of Base Classes 
+    "NOC_LLF": 48,   # Number of Characters
     "PAR_LLF": 3,   # Number of Parameters for LLF
-    "NOO_LLF": 8,    # Number of Operators and Operands (LLF)
-    "NOL_LTCE": 3,    # Number of Lines (LTCE)
+    "NOO_LLF": 7,    # Number of Operators and Operands (LLF)
     "NOC_LTCE": 54,  # Number of Characters for LTCE
-    "NOO_CCC": 8,    # Number of Operators/Operands in CCC
-    "NOC_CCC": 3,    # Number of Comprehensions in CCC
+    "NOL_LTCE": 3,    # Number of Lines (LTCE)
+    "NOC_CCC": 62,    # Number of Comprehensions in CCC
     "NOFF_CCC": 3,   # Number of For Clauses and Filters in CCC
-    "LEC_MNC": 3,    # Length of Element Chain (MNC)
-    "DNC_MNC": 3,    # Depth of Nested Container (MNC)
-    "NCT_MNC": 2,    # Number of Container Types (MNC)
+    "NOO_CCC": 8,    # Number of Operators/Operands in CCC
 }
 
 def add_smell(smells, name, lineno, details, file_path):
@@ -42,18 +38,18 @@ def detect_lm(node, smells, file_path, source_code):
     if mloc > THRESHOLDS["MLOC_LM"]:
         add_smell(smells, "Long Method (LM)", node.lineno, f"Method Length: {mloc}", file_path)
 
-def detect_lsc(node, smells, file_path):
-    """Detect Long Scope Chaining (LSC)."""
-    doc = calculate_doc(node)
-    if doc > THRESHOLDS["DOC_LSC"]:
-        add_smell(smells, "Long Scope Chaining (LSC)", node.lineno, f"Nested Levels: {doc}", file_path)
-
 def detect_lc(node, smells, file_path,source_code):
     """Detect Large Class (LC)."""
     s_code = source_code
     cloc = calculate_cloc(node, s_code)
     if cloc > THRESHOLDS["CLOC_LC"]:
         add_smell(smells, "Large Class (LC)", node.lineno, f"Class Lines of Code: {cloc}", file_path)
+        
+def detect_lsc(node, smells, file_path):
+    """Detect Long Scope Chaining (LSC)."""
+    doc = calculate_doc(node)
+    if doc > THRESHOLDS["DOC_LSC"]:
+        add_smell(smells, "Long Scope Chaining (LSC)", node.lineno, f"Nested Levels: {doc}", file_path)
 
 def detect_lbcl(node, smells, file_path):
     """Detect Long Base Class List (LBCL)."""
