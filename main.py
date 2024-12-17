@@ -86,8 +86,8 @@ def analyze_code_snippet(code_snippet, file_path="code_snippet.py"):
 
 
 
-# Example usage
-if __name__ == "__main__":
-    directory_path = "django"  # Replace with your Python directory path
-    report_path = "dj_new.json"  # Replace with your desired output path
-    detect_code_smells_in_directory(directory_path, report_path)
+# # Example usage
+# if __name__ == "__main__":
+#     directory_path = "django"  # Replace with your Python directory path
+#     report_path = "dj_new.json"  # Replace with your desired output path
+#     detect_code_smells_in_directory(directory_path, report_path)
