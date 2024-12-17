@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, session
-import os
 import json
+from flask import Flask, render_template, request, jsonify, send_file, session
+import os
 from main import detect_code_smells_in_directory, analyze_code_snippet
 from fpdf import FPDF
 
