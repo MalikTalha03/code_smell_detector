@@ -41,9 +41,7 @@ def calculate_mloc(node, source_code):
         mloc = sum(1 for line in cleaned_lines if line.strip())
     else:
         mloc = len(node.body)
-    print('mloc', mloc)
     return mloc
-
 
 def calculate_cloc(node, source_code):
     """Calculate Class Lines of Code (CLOC), ignoring comments, decorators, and docstrings."""
@@ -69,7 +67,6 @@ def calculate_cloc(node, source_code):
         cloc = sum(1 for line in cleaned_lines if line.strip())
     else:
         cloc = len(node.body)
-    print('cloc', cloc)
     return cloc
 
 
@@ -88,10 +85,10 @@ def calculate_noo(node):
     return count_operators_and_operands(node)
 
 def count_operators_and_operands(node):
+    """Count operators and operands for Long Lambda Function (LLF)."""
     counter = Counter()
     counter.visit(node)
     return counter.operators + counter.operands
-
 
 def calculate_nol(node):
     """Calculate Number of Lines (NOL)."""
