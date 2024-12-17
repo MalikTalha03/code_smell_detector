@@ -204,13 +204,17 @@ class CodeSmellDetectorApp:
             messagebox.showwarning("Warning", "Please enter a code snippet")
             return
 
-        # Show progress popup
         self.show_progress_popup()
 
         def run_analysis():
             try:
                 results = analyze_code_snippet(code)
+                if results is None:
+                    self.root.after(0, lambda: messagebox.showwarning("Warning", "Not a valid Python code"))
                 self.root.after(0, lambda: self.handle_analysis_complete(results, 'code_snippet'))
+            except ValueError as ve:
+                self.root.after(0, lambda: self.handle_analysis_error(ve, 'code_snippet'))
+                self.root.after(0, self.close_progress_popup)
             except Exception as e:
                 self.root.after(0, lambda: self.handle_analysis_error(e, 'code_snippet'))
 
@@ -265,6 +269,7 @@ class CodeSmellDetectorApp:
 
         threading.Thread(target=run_analysis, daemon=True).start()
 
+        # Close progress popup
 
     def handle_analysis_complete(self, results, analysis_type):
         # Close progress popup
@@ -274,7 +279,6 @@ class CodeSmellDetectorApp:
         self.display_results(results)
 
     def handle_analysis_error(self, error, analysis_type):
-        # Close progress popup
         self.close_progress_popup()
         # Show error message
         messagebox.showerror("Error", str(error))
@@ -288,6 +292,8 @@ class CodeSmellDetectorApp:
 
         # Summarize code smells by type
         smell_counts = {}
+        if data is None:
+            self.root.after(0, lambda: messagebox.showwarning("Warning", "No valid Python code found"))
         for item in data:
             smell = self.get_smell_abbreviation(item['code_smell'])
             smell_counts[smell] = smell_counts.get(smell, 0) + 1
@@ -398,6 +404,7 @@ class CodeSmellDetectorApp:
         abbr_data = [["Abbreviation", "Full Name", "Effect"]]
         for full_name, abbr in self.ABBREVIATIONS.items():
             effect = self.get_smell_effect(abbr)
+            effect = Paragraph(effect, styles['Normal'])  
             abbr_data.append([abbr, full_name, effect])
 
         abbr_table = Table(abbr_data, colWidths=[100, 300, 200])
@@ -448,19 +455,20 @@ class CodeSmellDetectorApp:
 
 
     def get_smell_effect(self, code_smell):
-        """Return the effect/impact of a given code smell."""
+        """Return a concise, one-line impact of a given code smell."""
         effects = {
-            "LPL": "Maintainability",
-            "LBCL": "Maintainability",
-            "LC": "Maintainability",
-            "LM": "Maintainability",
-            "CCC": "Performance",
-            "LLF": "Readability",
-            "LTCE": "Readability",
-            "LSC": "Maintainability",
-            "LMC": "Performance",
+            "LPL": "Makes functions harder to maintain and understand, possibly increasing overhead.",
+            "LBCL": "Increases complexity in inheritance, affecting maintainability and slight performance.",
+            "LC": "Large classes reduce clarity, potentially raising memory and CPU overhead.",
+            "LM": "Long methods are harder to optimize and understand, possibly affecting performance.",
+            "CCC": "Complex comprehensions lower readability and can increase CPU and memory usage.",
+            "LLF": "Long lambdas impair readability and can marginally affect optimization.",
+            "LTCE": "Long ternary expressions obscure logic and can hinder maintainability.",
+            "LSC": "Deep nesting increases complexity and can slightly raise CPU usage.",
+            "LMC": "Long message chains are harder to maintain and may increase performance overhead."
         }
-        return effects.get(code_smell, "Unknown")
+        return effects.get(code_smell, "Unknown impact.")
+
 
 
 def main():
