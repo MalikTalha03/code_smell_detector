@@ -92,10 +92,9 @@ ABBREVIATIONS = {
 }
 
 
-
 @app.route('/download_pdf', methods=['GET'])
 def download_pdf():
-    # Get project_folder from session
+    
     project_folder = session.get('project_folder')
     
     if not project_folder:
