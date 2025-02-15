@@ -5,7 +5,7 @@ from main import detect_code_smells_in_directory, analyze_code_snippet
 from fpdf import FPDF
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 50 MB
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024 
 
 # Set the secret key to sign session data
 app.secret_key = 'smell_detector'
