@@ -44,7 +44,7 @@ class CodeSmellDetectorApp:
         # Current report tracking
         self.current_report = None
 
-        # Progress popup
+        
         self.progress_popup = None
         self.progress_bar = None
 
