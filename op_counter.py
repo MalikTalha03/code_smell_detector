@@ -24,6 +24,7 @@ class Counter(ast.NodeVisitor):
             self.operands += len(node.targets) + 1 
             self.generic_visit(node)
 
+
         def visit_Compare(self, node):
             self.operators += len(node.ops)  
             self.operands += len(node.comparators) + 1
