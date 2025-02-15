@@ -52,7 +52,7 @@ def detect_lsc(node, smells, file_path):
         add_smell(smells, "Long Scope Chaining (LSC)", node.lineno, f"Nested Levels: {doc}", file_path)
 
 def detect_lbcl(node, smells, file_path):
-    """Detect Long Base Class List (LBCL)."""
+    """Detect Long Base Class List ."""
     nbc = calculate_nbc(node)
     if nbc > THRESHOLDS["NBC_LBCL"]:
         add_smell(smells, "Long Base Class List (LBCL)", node.lineno, f"Base Classes: {nbc}", file_path)
